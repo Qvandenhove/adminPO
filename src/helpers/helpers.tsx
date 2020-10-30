@@ -14,7 +14,7 @@ firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore()
 
 const helpers = {
-    async getFormations(name:string ="", niveau:string ="", type:string =""){
+    async getFormations(name:string =""){
         let formationsList = await db.collection("Formation").get()
         let formations: any[] = []
         formationsList.forEach((formation) => {
@@ -27,6 +27,19 @@ const helpers = {
         console.log(JSON.parse(JSON.stringify(formations)))
         return JSON.stringify(formations)
     },
+
+    async getFormation(formId:string){
+        let searched = await (await db.collection("Formation").doc(formId).get()).data()
+        return searched
+    },
+
+    async updateFormation(formId:string , newName:string, newType:string, newLevel:string){
+        let update = await db.collection("Formation").doc(formId).update({
+            name: newName,
+            type: newType,
+            level: newLevel
+        })
+    }
 }
 
 export default helpers

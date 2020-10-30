@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonPage, IonRow, IonSearchbar, IonTab, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonModal, IonPage, IonRow, IonSearchbar, IonTab, IonTitle, IonToolbar } from '@ionic/react';
 import helpers from '../helpers/helpers'
 import './Tab1.css';
 import { searchCircle } from 'ionicons/icons';
+import EditFormation from '../components/editFormation';
 let update = 0
 const Tab1: React.FC = () => {
+  const [editingId, setEditingId] = useState("")
   const [searched, setSearched] = useState("")
   const [formations, setFormations] = useState("[]")
+  const [editingModal, setEditingModal] = useState(false)
   useEffect(() => {
     console.log("effect")
     helpers.getFormations(searched).then((value) => {
@@ -54,7 +57,10 @@ const Tab1: React.FC = () => {
                   {formation.type}
                 </IonCol>
                 <IonCol class="ion-text-center">
-                  <IonButton onClick={() => {setFormations("[]"); update++}} fill="outline">Modifier</IonButton>
+                  <IonButton color="secondary" onClick={() => {
+                    setEditingId(formation.id)
+                    setEditingModal(true)
+                  }} fill="outline">Modifier</IonButton>
                 </IonCol>
                 <IonCol class="ion-text-center">
                   <IonButton>Supprimer</IonButton>
@@ -64,12 +70,14 @@ const Tab1: React.FC = () => {
           })}
           <IonRow class="ion-justify-content-center">
             <IonCol size="8">
-              <IonSearchbar onIonChange={(e) => {setSearched(e.detail.value); console.log(e.detail.value)}} animated={true} placeholder="Search" />
+              <IonSearchbar class="search" onIonChange={(e) => {setSearched(e.detail.value); console.log(e.detail.value)}} animated={true} placeholder="Search" />
             </IonCol>
-            <IonCol size="2"><IonButton><IonIcon icon={searchCircle} /></IonButton></IonCol>
+            <IonCol size="2"><IonButton fill="solid" class="search"><IonIcon icon={searchCircle} /></IonButton></IonCol>
           </IonRow>
         </IonGrid>
-        {/* <ExploreContainer name="Tab 1 page" /> */}
+        <IonModal onDidDismiss={() => {setSearched("")}} backdropDismiss={false} showBackdrop={false} cssClass="edit" isOpen={editingModal}>
+          <EditFormation modalController={setEditingModal} id={editingId} />
+        </IonModal>
       </IonContent>
     </IonPage>
   );

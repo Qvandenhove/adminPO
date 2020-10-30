@@ -1,3 +1,23 @@
 ion-row.table ion-col{
     border: solid white .5px
 }
+
+
+/* Edit Modal */
+ion-modal.edit{
+    --background: var(--ion-color-tertiary)
+}
+
+ion-modal.edit ion-input{
+    --background: var(--ion-color-primary)
+}
+
+ion-searchbar.search{
+    --background: white!important;
+    --color: black
+}
+
+ion-button.search{
+    font-size: 2rem;
+    height: 100%; 
+}
