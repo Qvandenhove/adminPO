@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonAlert, IonButton, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import helpers from '../helpers/helpers'
 import './Tab1.css';
-import { searchCircle } from 'ionicons/icons';
+import { pencilOutline, ribbon, searchCircle, trashOutline } from 'ionicons/icons';
 import EditFormation from '../components/editFormation';
 import AddFormation from '../components/addFormation';
 
@@ -34,7 +34,7 @@ const Tab1: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Tab 1</IonTitle>
+          <IonTitle><IonIcon icon={ribbon} />Formations</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -49,44 +49,45 @@ const Tab1: React.FC = () => {
               <IonSearchbar class="search" onIonChange={(e) => {setSearched(e.detail.value); console.log(e.detail.value)}} animated={true} placeholder="Search" />
             </IonCol>
             <IonCol size="2"><IonButton fill="solid" class="search"><IonIcon icon={searchCircle} /></IonButton></IonCol>
-            <IonCol size="2"><IonButton onClick={() => {setAddModal(true)}}>Ajouter formation</IonButton></IonCol>
+            <IonCol size="2"><IonButton fill="solid" class="addFormation" onClick={() => {setAddModal(true)}}>Ajouter</IonButton></IonCol>
           </IonRow>
-          <IonRow class="table" key="title-col">
-            <IonCol class="ion-text-center">
+          <IonRow class="table impair" key="title-col">
+            <IonCol class="ion-text-center table">
               Formation
             </IonCol>
-            <IonCol class="ion-text-center">
+            <IonCol class="ion-text-center table">
               Niveau
             </IonCol>
-            <IonCol class="ion-text-center">
+            <IonCol class="ion-text-center table">
               Type
             </IonCol>
-            <IonCol></IonCol>
-            <IonCol></IonCol>
+            <IonCol class="table"></IonCol>
+            <IonCol class="table"></IonCol>
           </IonRow>
-          {JSON.parse(formations).map((formation:any) => {
+          {JSON.parse(formations).map((formation:any, index:number) => {
+            let isEven = index % 2 == 0
             return (
-              <IonRow class="table" key={formation.id }>
-                <IonCol class="ion-text-center">
+              <IonRow class={`table ${isEven ? "pair" : "impair"}`} key={formation.id }>
+                <IonCol class="ion-text-center table">
                   {formation.name}
                 </IonCol>
-                <IonCol class="ion-text-center">
+                <IonCol class="ion-text-center table">
                   {formation.lvl}
                 </IonCol>
-                <IonCol class="ion-text-center">
+                <IonCol class="ion-text-center table">
                   {formation.type}
                 </IonCol>
-                <IonCol class="ion-text-center">
-                  <IonButton color="secondary" onClick={() => {
+                <IonCol class="ion-text-center table">
+                  <IonButton class="editForm" shape="round"  onClick={() => {
                     setEditingId(formation.id)
                     setEditingModal(true)
-                  }} fill="outline">Modifier</IonButton>
+                  }}><IonIcon icon={pencilOutline} /></IonButton>
                 </IonCol>
-                <IonCol class="ion-text-center">
-                  <IonButton onClick={() => {
+                <IonCol class="ion-text-center table">
+                  <IonButton class="editForm" shape="round" onClick={() => {
                     setEditingId(formation.id)
                     setDeleteAlert(true)
-                    }}>Supprimer</IonButton>
+                    }}><IonIcon icon={trashOutline} /></IonButton>
                 </IonCol>
               </IonRow>
             )

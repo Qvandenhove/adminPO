@@ -2,6 +2,18 @@ ion-row.table ion-col{
     border: solid white .5px
 }
 
+ion-row.pair{
+    background: #a6a6a6;
+}
+
+ion-row.impair{
+    background: #c4c4c4
+}
+
+ion-col.table, ion-row.table{
+    border: white solid 0px!important;
+}
+
 
 /* Edit Modal */
 ion-modal.edit{
@@ -23,4 +35,18 @@ ion-searchbar.search{
 ion-button.search{
     font-size: 2rem;
     height: 100%; 
+}
+
+ion-button.addFormation{
+    height: 100%;
+    font-size: 1rem;
+}
+
+ion-button.editForm{
+    --background: #898989!important;
+}
+
+ion-toolbar{
+    --background: var(--ion-color-dark);
+    --color: var(--ion-color-light);
 }
