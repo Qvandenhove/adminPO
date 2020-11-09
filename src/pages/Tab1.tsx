@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonModal, IonPage, IonRow, IonSearchbar, IonTab, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonModal, IonPage, IonRow, IonSearchbar, IonTab, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import helpers from '../helpers/helpers'
 import './Tab1.css';
 import { searchCircle } from 'ionicons/icons';
@@ -10,13 +10,19 @@ const Tab1: React.FC = () => {
   const [searched, setSearched] = useState("")
   const [formations, setFormations] = useState("[]")
   const [editingModal, setEditingModal] = useState(false)
-  useEffect(() => {
-    console.log("effect")
+  const [updateSuccessToast, setUpdateSuccessToast] = useState(false)
+  const [updateErrorToast, setUpdateErrorToast] = useState(false)
+  const updateFormations = () => {
     helpers.getFormations(searched).then((value) => {
       setFormations(value)
       console.log(formations)
+      console.log("update")
     })
-  }, [update, searched])
+  }
+
+  useEffect(() => {
+    updateFormations()
+  }, [update])
   return (
     <IonPage>
       <IonHeader>
@@ -75,9 +81,11 @@ const Tab1: React.FC = () => {
             <IonCol size="2"><IonButton fill="solid" class="search"><IonIcon icon={searchCircle} /></IonButton></IonCol>
           </IonRow>
         </IonGrid>
-        <IonModal onDidDismiss={() => {setSearched("")}} backdropDismiss={false} showBackdrop={false} cssClass="edit" isOpen={editingModal}>
-          <EditFormation modalController={setEditingModal} id={editingId} />
+        <IonModal onDidDismiss={() => {updateFormations()}} backdropDismiss={false} showBackdrop={false} cssClass="edit" isOpen={editingModal}>
+          <EditFormation toastsControllers={{error:setUpdateErrorToast, success:setUpdateSuccessToast}} modalController={setEditingModal} id={editingId} />
         </IonModal>
+        <IonToast onDidDismiss={() => {setUpdateSuccessToast(false)}} message="Formation mise à jour avec succés" duration={1000} isOpen={updateSuccessToast} />
+        <IonToast onDidDismiss={() => {setUpdateErrorToast(false)}} message="Il y a eu un problème avec la mise à jour réessayez plus tard" duration={1000} isOpen={updateErrorToast} />
       </IonContent>
     </IonPage>
   );

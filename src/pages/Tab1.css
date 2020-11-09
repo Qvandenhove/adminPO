@@ -8,8 +8,11 @@ ion-modal.edit{
     --background: var(--ion-color-tertiary)
 }
 
-ion-modal.edit ion-input{
-    --background: var(--ion-color-primary)
+ion-modal.edit ion-input, ion-modal.edit ion-select{
+    --background: var(--ion-color-primary);
+    background: var(--ion-color-primary)!important;
+    --color: var(--ion-color-light);
+    color: var(--ion-color-light)!important;
 }
 
 ion-searchbar.search{

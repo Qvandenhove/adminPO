@@ -1,13 +1,14 @@
-import { IonButton, IonCol, IonGrid, IonInput, IonRow } from '@ionic/react'
+import { IonButton, IonCol, IonGrid, IonInput, IonRow, IonSelect, IonSelectOption } from '@ionic/react'
 import React, { useEffect, useState } from 'react'
 import helpers from '../helpers/helpers'
 
 interface editProps{
     id: string
     modalController: any
+    toastsControllers: {error: any, success:any}
 }
 
-const EditFormation:React.FC<editProps> = ({id, modalController}) => {
+const EditFormation:React.FC<editProps> = ({id, modalController, toastsControllers}) => {
     const [newName, setNewName] = useState("")
     const [newLevel, setNewLevel] = useState("")
     const [newType, setnewType] = useState("")
@@ -30,12 +31,20 @@ const EditFormation:React.FC<editProps> = ({id, modalController}) => {
             </IonRow>
             <IonRow class="ion-justify-content-center">
                 <IonCol>
-                    <IonInput name="level" color="secondary" onIonChange={(e) => {setNewLevel(e.detail.value)}} value={newLevel} />
+                    <IonSelect name="level" value={newLevel} onIonChange={(e) => {setNewLevel(e.detail.value)}}>
+                        <IonSelectOption value="Bac +2">Bac +2</IonSelectOption>
+                        <IonSelectOption value="Bac +3">Bac +3</IonSelectOption>
+                        <IonSelectOption value="Bac +5">Bac +5</IonSelectOption>
+                    </IonSelect>
                 </IonCol>
             </IonRow>
             <IonRow class="ion-justify-content-center">
                 <IonCol>
-                    <IonInput name="type" color="secondary" onIonChange={(e) => {setnewType(e.detail.value)}} value={newType} />
+                    <IonSelect name="type" onIonChange={(e) => {setnewType(e.detail.value)}} value={newType} >
+                        <IonSelectOption value="Informatique">Informatique</IonSelectOption>
+                        <IonSelectOption value="BTP">BTP</IonSelectOption>
+                        <IonSelectOption value="Industries et Services">Industries et Services</IonSelectOption>
+                    </IonSelect>
                 </IonCol>
             </IonRow>
             <IonRow>
@@ -43,9 +52,12 @@ const EditFormation:React.FC<editProps> = ({id, modalController}) => {
                     console.log(newName)
                     helpers.updateFormation(id, newName, newType, newLevel).then(() => {
                         modalController(false)
-                        console.log("done")
-                    })
+                        toastsControllers.success(true)
+                    }).catch(toastsControllers.error(true))
                     }} >Mettre à jour</IonButton></IonCol>
+                <IonCol>
+                    <IonButton onClick={() => {modalController(false)}}>Annuler</IonButton>
+                </IonCol>
             </IonRow>
         </IonGrid>
     )
