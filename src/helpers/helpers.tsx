@@ -20,7 +20,7 @@ const helpers = {
         formationsList.forEach((formation) => {
             let datas = formation.data()
             console.log(name)
-            if(datas.name.indexOf(name) >= 0 || name == "")
+            if(datas.name.indexOf(name) >= 0 || name === "")
             formations.push({name:datas.name, lvl:datas.level, type:datas.type, id: formation.id})
         })
         console.log(JSON.stringify(formations))
@@ -39,6 +39,21 @@ const helpers = {
             type: newType,
             level: newLevel
         })
+        return update
+    },
+
+    async addFormation(name:string, type:string, level:string){
+        let insert = await db.collection("Formation").doc().set({
+            name: name,
+            type: type,
+            level: level
+        })
+        return insert
+    },
+
+    async deleteFormation(id:string){
+        let deleteForm = await db.collection("Formation").doc(id).delete()
+        return deleteForm
     }
 }
 

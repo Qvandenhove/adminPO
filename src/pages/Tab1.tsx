@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonModal, IonPage, IonRow, IonSearchbar, IonTab, IonTitle, IonToast, IonToolbar } from '@ionic/react';
+import { IonAlert, IonButton, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import helpers from '../helpers/helpers'
 import './Tab1.css';
 import { searchCircle } from 'ionicons/icons';
 import EditFormation from '../components/editFormation';
-let update = 0
+import AddFormation from '../components/addFormation';
+
 const Tab1: React.FC = () => {
+  // Variables de repérage des formations
   const [editingId, setEditingId] = useState("")
   const [searched, setSearched] = useState("")
   const [formations, setFormations] = useState("[]")
+  // Modales de mises à jour et ajouts
   const [editingModal, setEditingModal] = useState(false)
+  const [addModal, setAddModal] = useState(false)
+  const [deleteAlert, setDeleteAlert] = useState(false)
+  // Messages aux utilisateurs des mise à jour de la table
   const [updateSuccessToast, setUpdateSuccessToast] = useState(false)
   const [updateErrorToast, setUpdateErrorToast] = useState(false)
-  const updateFormations = () => {
-    helpers.getFormations(searched).then((value) => {
-      setFormations(value)
-      console.log(formations)
-      console.log("update")
-    })
-  }
+  const [addSuccessToast, setAddSuccessToast] = useState(false)
+  const [addErrorToast, setAddErrorToast] = useState(false)
+  const [deleteSuccessToast, setDeleteSuccessToast] = useState(false)
+  const [deleteErrorToast, setDeleteErrorToast] = useState(false)
+
 
   useEffect(() => {
-    updateFormations()
-  }, [update])
+    // On actualise les formations
+    helpers.getFormations(searched).then((value) => {
+      setFormations(value)
+    })
+  }, [formations, searched])
   return (
     <IonPage>
       <IonHeader>
@@ -37,6 +44,13 @@ const Tab1: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonGrid>
+          <IonRow class="ion-justify-content-center">
+            <IonCol size="8">
+              <IonSearchbar class="search" onIonChange={(e) => {setSearched(e.detail.value); console.log(e.detail.value)}} animated={true} placeholder="Search" />
+            </IonCol>
+            <IonCol size="2"><IonButton fill="solid" class="search"><IonIcon icon={searchCircle} /></IonButton></IonCol>
+            <IonCol size="2"><IonButton onClick={() => {setAddModal(true)}}>Ajouter formation</IonButton></IonCol>
+          </IonRow>
           <IonRow class="table" key="title-col">
             <IonCol class="ion-text-center">
               Formation
@@ -69,23 +83,36 @@ const Tab1: React.FC = () => {
                   }} fill="outline">Modifier</IonButton>
                 </IonCol>
                 <IonCol class="ion-text-center">
-                  <IonButton>Supprimer</IonButton>
+                  <IonButton onClick={() => {
+                    setEditingId(formation.id)
+                    setDeleteAlert(true)
+                    }}>Supprimer</IonButton>
                 </IonCol>
               </IonRow>
             )
           })}
-          <IonRow class="ion-justify-content-center">
-            <IonCol size="8">
-              <IonSearchbar class="search" onIonChange={(e) => {setSearched(e.detail.value); console.log(e.detail.value)}} animated={true} placeholder="Search" />
-            </IonCol>
-            <IonCol size="2"><IonButton fill="solid" class="search"><IonIcon icon={searchCircle} /></IonButton></IonCol>
-          </IonRow>
         </IonGrid>
-        <IonModal onDidDismiss={() => {updateFormations()}} backdropDismiss={false} showBackdrop={false} cssClass="edit" isOpen={editingModal}>
+        {/* Modal de mise à jour de formation */}
+        <IonModal onDidDismiss={() => {setEditingModal(false); setFormations(formations + " ")}} backdropDismiss={false} showBackdrop={false} cssClass="edit" isOpen={editingModal}>
           <EditFormation toastsControllers={{error:setUpdateErrorToast, success:setUpdateSuccessToast}} modalController={setEditingModal} id={editingId} />
         </IonModal>
+        {/* Modal d'ajout de formation */}
+        <IonModal onDidDismiss={() => {setAddModal(false); setFormations(formations + " ")}} backdropDismiss={false} showBackdrop={false} cssClass="edit" isOpen={addModal}>
+          <AddFormation toastsControllers={{error:setAddErrorToast, success:setAddSuccessToast}} modalController={setAddModal} />
+        </IonModal>
+        {/* Suppression d'une formation */}
+        <IonAlert onDidDismiss={() => {setDeleteAlert(false); setFormations(formations + " ")}} isOpen={deleteAlert} buttons={[{text:"Oui", handler: () => {
+          helpers.deleteFormation(editingId).then(() => {
+            setDeleteSuccessToast(true)}).catch(() => {setDeleteErrorToast(true)})}}, "Non"]} message={"Êtes vous sur de vouloir supprimer cette formation ?"} />
+        {/* Messages de mise à jour deformation */}
         <IonToast onDidDismiss={() => {setUpdateSuccessToast(false)}} message="Formation mise à jour avec succés" duration={1000} isOpen={updateSuccessToast} />
         <IonToast onDidDismiss={() => {setUpdateErrorToast(false)}} message="Il y a eu un problème avec la mise à jour réessayez plus tard" duration={1000} isOpen={updateErrorToast} />
+        {/* Messages d'ajout de formation */}
+        <IonToast onDidDismiss={() => {setAddSuccessToast(false)}} message="Formation ajoutée avec succés" duration={1000} isOpen={addSuccessToast} />
+        <IonToast onDidDismiss={() => {setAddErrorToast(false)}} message="Il y a eu un problème avec l'ajout réessayez plus tard" duration={1000} isOpen={addErrorToast} />
+        {/* Messages de suppression de formation */}
+        <IonToast onDidDismiss={() => {setDeleteErrorToast(false)}} message="Il y a eu un problème avec la suppression réessayez plus tard" duration={1000} isOpen={deleteErrorToast} />
+        <IonToast onDidDismiss={() => {setDeleteSuccessToast(false)}} message="Formation supprimée avec succés" duration={1000} isOpen={deleteSuccessToast} />
       </IonContent>
     </IonPage>
   );
