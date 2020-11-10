@@ -14,6 +14,7 @@ firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore()
 
 const helpers = {
+    // Formations
     async getFormations(name:string =""){
         let formationsList = await db.collection("Formation").get()
         let formations: any[] = []
@@ -54,6 +55,17 @@ const helpers = {
     async deleteFormation(id:string){
         let deleteForm = await db.collection("Formation").doc(id).delete()
         return deleteForm
+    },
+
+    // Satisfaction
+    async getResults(){
+        let resultsList = await db.collection('Avis').get()
+        let results = []
+        resultsList.forEach((res) => {
+            let datas = res.data()
+            results.push({...datas, id:res.id})
+        })
+        return results
     }
 }
 
