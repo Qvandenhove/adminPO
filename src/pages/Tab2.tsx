@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import './Tab2.css';
 import Chart from 'chart.js'
@@ -10,66 +10,68 @@ const Tab2: React.FC = () => {
   
   let notes
   let datas = [{data: [], backgroundColor: []}]
-  helpers.getResults().then((values) => {
-    notes = values
-    let noteCount = notes.length
-    let ctx = document.querySelector("canvas#contentement")
-  if(ctx){
-  notes.forEach(note => {
-    for(let critere in note){
-      if (critere != "id"){
-        critereIndex = criteres.indexOf(critere)
-        if (critereIndex < 0){
-          let randomColor = `rgba(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, 0.4)`
-          criteres.push(critere)
-          datas[0].data.push(note[critere])
-          datas[0].backgroundColor.push(randomColor)
-        }else{
-          datas[0].data[critereIndex] += note[critere]
+  useEffect(() => {
+    helpers.getResults().then((values) => {
+      notes = values
+      let noteCount = notes.length
+      let ctx = document.querySelector("canvas#contentement")
+      if(ctx){
+      notes.forEach(note => {
+        for(let critere in note){
+          if (critere != "id"){
+            critereIndex = criteres.indexOf(critere)
+            if (critereIndex < 0){
+              criteres.push(critere)
+              datas[0].data.push(note[critere])
+              datas[0].backgroundColor.push('rgba(255,194,82, 0.5)')
+            }else{
+              datas[0].data[critereIndex] += note[critere]
+            }
+          }
         }
+      });
+      console.log(datas)
+      for(let value in datas[0].data){
+        datas[0].data[value] = datas[0].data[value] / noteCount
       }
-    }
-  });
-  console.log(datas)
-  for(let value in datas[0].data){
-    datas[0].data[value] = datas[0].data[value] / noteCount
-  }
-  let chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: criteres,
-        datasets: datas,
-      },
-      title: "Moyenne des notes",
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    max: 5,
-                    min: 0,
-                    beginAtZero: true
-                }
-            }]
-        },
-        title: {
-          display: true,
-          text: "Moyenne des notes",
-          fontSize: 30,
-        },
-        legend:{
-          display: false,
-          
-        }
-      }
-    })
-
-  }else{
-    console.log("nok")
-  }
+      let chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: criteres,
+            datasets: datas,
+          },
+          title: "Moyenne des notes",
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        max: 5,
+                        min: 0,
+                        beginAtZero: true
+                    }
+                }]
+            },
+            title: {
+              display: true,
+              text: "Moyenne des notes",
+              fontSize: 30,
+            },
+            legend:{
+              display: false,
+              
+            }
+          }
+        })
   
-  })
+      }else{
+        console.log("nok")
+      }
+      
+    })
+  }, [])
+  
   return (
     <IonPage>
       <IonHeader>

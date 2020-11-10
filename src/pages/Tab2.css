@@ -4,3 +4,7 @@ canvas{
     max-width: 100%!important;
     width: 100%!important;
 }
+
+ion-content{
+    --background: var(--ion-color-light)!important;
+}
