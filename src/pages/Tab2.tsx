@@ -3,73 +3,39 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/rea
 import './Tab2.css';
 import Chart from 'chart.js'
 import helpers from '../helpers/helpers';
+import { type } from 'os';
 
 const Tab2: React.FC = () => {
-  let notesRecues = {orientation: [0, 0, 0, 0, 0], accueil: [0, 0 , 0 , 0 , 0], choix: [0, 0 , 0 , 0 , 0]}
+  let criteresRecus = []
+  let critereIndex = 0
   let notes
+  let datas = []
   helpers.getResults().then((values) => {
     notes = values
     let ctx = document.querySelector("canvas#contentement")
   if(ctx){
   notes.forEach(note => {
-    notesRecues.orientation[note.orientation - 1]++
-    notesRecues.accueil[note.accueil - 1]++
-    notesRecues.choix[note.choix - 1]++
+    for(let critere in note){
+      if (critere != "id"){
+        critereIndex = criteresRecus.indexOf(critere)
+        if (critereIndex < 0){
+          let randomColor = `rgba(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, 0.4)`
+          datas.push({label: critere, data: [0, 0, 0, 0, 0], backgroundColor: [randomColor, randomColor, randomColor, randomColor, randomColor]})
+          criteresRecus.push(critere)
+          critereIndex = criteresRecus.length - 1
+        }
+        datas[critereIndex].data[note[critere] - 1]++
+      }
+    }
+    // notesRecues.orientation[note.orientation - 1]++
+    // notesRecues.accueil[note.accueil - 1]++
+    // notesRecues.choix[note.choix - 1]++
   });
-    let chart = new Chart(ctx, {
+  let chart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: ['Très insatisfait', 'Insatisfait', 'Neutre', 'Satisfait', 'Très satisfait'],
-        datasets: [{
-          label: 'Orientation',
-          data: [
-            notesRecues.orientation[0],
-            notesRecues.orientation[1],
-            notesRecues.orientation[2],
-            notesRecues.orientation[3],
-            notesRecues.orientation[4]
-          ],
-          backgroundColor: [
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-        ]
-        },{
-          label: "Accueil",
-          data: [
-            notesRecues.accueil[0],
-            notesRecues.accueil[1],
-            notesRecues.accueil[2],
-            notesRecues.accueil[3],
-            notesRecues.accueil[4]
-          ],
-          backgroundColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(255, 99, 132, 1)',
-            'rgba(255, 99, 132, 1)',
-            'rgba(255, 99, 132, 1)',
-            'rgba(255, 99, 132, 1)',
-        ]
-        },{
-          label: "Choix",
-          data: [
-            notesRecues.choix[0],
-            notesRecues.choix[1],
-            notesRecues.choix[2],
-            notesRecues.choix[3],
-            notesRecues.choix[4],
-          ],
-          backgroundColor: [
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(255, 206, 86, 0.2)'
-          ]
-        }
-      ],
+        datasets: datas,
       options: {
         legend: {
           labels : {
