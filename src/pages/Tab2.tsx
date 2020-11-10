@@ -43,7 +43,7 @@ const Tab2: React.FC = () => {
           title: "Moyenne des notes",
           options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             scales: {
                 yAxes: [{
                     ticks: {
