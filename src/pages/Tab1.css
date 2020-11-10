@@ -2,6 +2,10 @@ ion-row.table ion-col{
     border: solid white .5px
 }
 
+ion-content{
+    --background: var(--ion-color-light);
+}
+
 ion-row.pair{
     background: #a6a6a6;
 }
